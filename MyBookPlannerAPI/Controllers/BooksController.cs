@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyBookPlannerAPI.Controllers
 {
     [ApiController]
-    public class CatalogController : ControllerBase
+    public class BooksController : ControllerBase
     {
         [HttpGet]
-        [Route("/catalog")]
+        [Route("/books")]
         public string Get()
         {
             return "Hello ueaah";

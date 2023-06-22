@@ -9,7 +9,7 @@ namespace MyBookPlannerAPI.Controllers
     {
         [HttpGet]
         [Route("/user/{id:int}")]
-        public IActionResult GetById([FromServices] CatalogDataContext context, [FromRoute] int id)
+        public IActionResult GetUserById([FromServices] CatalogDataContext context, [FromRoute] int id)
         {
             var user = context.Users.FirstOrDefault(x => x.Id == id);
             if (user == null)
@@ -17,6 +17,32 @@ namespace MyBookPlannerAPI.Controllers
                return NotFound();
             }
             return Ok(user);
+        }
+
+        [HttpPost]
+        [Route("/user")]
+        public IActionResult PostUser([FromServices] CatalogDataContext context, [FromBody] User model)
+        {
+            try
+            {
+                var user = new User
+                {
+                    Id = 0,
+                    Username = model.Username,
+                    Email = model.Email,
+                    PasswordHash = model.PasswordHash,
+                    Biography = "Olá. Estou usando o MyBookPlanner!",
+                };
+
+                context.Users.Add(user);
+                context.SaveChanges();
+
+                return Created($"/user/{user.Id}", user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
