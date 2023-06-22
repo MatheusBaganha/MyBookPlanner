@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
 
@@ -9,19 +10,27 @@ namespace MyBookPlannerAPI.Controllers
     {
         [HttpGet]
         [Route("/user/{id:int}")]
-        public IActionResult GetUserById([FromServices] CatalogDataContext context, [FromRoute] int id)
+        public async Task<IActionResult> GetUserByIdAsync([FromServices] CatalogDataContext context, [FromRoute] int id)
         {
-            var user = context.Users.FirstOrDefault(x => x.Id == id);
-            if (user == null)
+            try
             {
-               return NotFound();
+                var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+
         }
 
         [HttpPost]
         [Route("/user")]
-        public IActionResult PostUser([FromServices] CatalogDataContext context, [FromBody] User model)
+        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromBody] User model)
         {
             try
             {
@@ -34,8 +43,8 @@ namespace MyBookPlannerAPI.Controllers
                     Biography = "Olá. Estou usando o MyBookPlanner!",
                 };
 
-                context.Users.Add(user);
-                context.SaveChanges();
+                await context.Users.AddAsync(user);
+                await context.SaveChangesAsync();
 
                 return Created($"/user/{user.Id}", user);
             }
