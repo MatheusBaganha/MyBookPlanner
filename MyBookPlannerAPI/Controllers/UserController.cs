@@ -53,5 +53,33 @@ namespace MyBookPlannerAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("/user/{id:int}")]
+        public async Task<IActionResult> PutUserAsync([FromServices] CatalogDataContext context, [FromRoute] int id, [FromBody]  User model)
+        {
+            try
+            {
+                var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+                if(user == null) { 
+                    return NotFound(); 
+                }
+
+                user.Username = model.Username;
+                user.Email = model.Email;
+                user.Biography = model.Biography;
+                user.PasswordHash = model.PasswordHash;
+
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
+
+                return Created($"/user/{user.Id}", user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
