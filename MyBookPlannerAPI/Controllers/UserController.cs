@@ -81,5 +81,30 @@ namespace MyBookPlannerAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("/user/{id:int}")]
+        public async Task<IActionResult> DeleteUserAsync([FromServices] CatalogDataContext context, [FromRoute] int id)
+        {
+            try
+            {
+                var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                context.Users.Remove(user);
+                await context.SaveChangesAsync();
+
+                return Ok(user);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
