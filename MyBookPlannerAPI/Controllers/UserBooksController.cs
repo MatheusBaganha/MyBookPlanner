@@ -15,7 +15,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var booksReaded = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus == "LIDO").OrderByDescending(x => x.UserScore).ToListAsync();
+                var booksReaded = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LIDO").OrderByDescending(x => x.UserScore).ToListAsync();
                 
                 if(booksReaded.Count == 0 || booksReaded == null)
                 {
@@ -23,6 +23,27 @@ namespace MyBookPlannerAPI.Controllers
                 }
 
                 return Ok(new ResultViewModel<List<UserBook>>(booksReaded));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<UserBook>("Internal error."));
+            }
+        }
+
+        [HttpGet]
+        [Route("/user-book/reading/{id:int}")]
+        public async Task<IActionResult> GetUserReadingBooks([FromServices] CatalogDataContext context, [FromRoute] int id)
+        {
+            try
+            {
+                var booksReading = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LENDO").OrderByDescending(x => x.UserScore).ToListAsync();
+
+                if(booksReading.Count == 0 || booksReading == null)
+                {
+                    return NotFound(new ResultViewModel<UserBook>("User has no reading books"));
+                }
+
+                return Ok(new ResultViewModel<List<UserBook>>(booksReading));
             }
             catch (Exception ex)
             {
