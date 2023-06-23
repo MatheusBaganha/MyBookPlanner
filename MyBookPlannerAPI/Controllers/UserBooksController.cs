@@ -50,5 +50,27 @@ namespace MyBookPlannerAPI.Controllers
                 return BadRequest(new ResultViewModel<UserBook>("Internal error."));
             }
         }
+
+
+        [HttpGet]
+        [Route("/user-book/wish-to-read/{id:int}")]
+        public async Task<IActionResult> GetUserWishReads([FromServices] CatalogDataContext context, [FromRoute] int id)
+        {
+            try
+            {
+                var booksToRead = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "DESEJO").OrderByDescending(x => x.UserScore).ToListAsync();
+
+                if(booksToRead.Count == 0 || booksToRead == null)
+                {
+                    return NotFound(new ResultViewModel<UserBook>("User has no wish to list books."));
+                }
+
+                return Ok(new ResultViewModel<List<UserBook>>(booksToRead));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<UserBook>("Internal error."));
+            }
+        }
     }
 }
