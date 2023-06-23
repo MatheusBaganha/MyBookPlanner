@@ -48,9 +48,13 @@ namespace MyBookPlannerAPI.Controllers
 
                 return Created($"/user/{user.Id}", user);
             }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "It was not possible to create the user.");
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "Internal error.");
             }
         }
 
@@ -76,9 +80,13 @@ namespace MyBookPlannerAPI.Controllers
 
                 return Created($"/user/{user.Id}", user);
             }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "It was not possible to update the user.");
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "Internal error.");
             }
         }
 
@@ -101,9 +109,13 @@ namespace MyBookPlannerAPI.Controllers
                 return Ok(user);
 
             }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest("It was not possible to delete the user.");
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "Internal error.");
             }
         }
     }
