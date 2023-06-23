@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.Models;
 using MyBookPlannerAPI.ViewModels;
+using MyBookPlannerAPI.ViewModels.UserBooks;
 
 namespace MyBookPlannerAPI.Controllers
 {
@@ -15,14 +16,35 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var booksReaded = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LIDO").OrderByDescending(x => x.UserScore).ToListAsync();
-                
-                if(booksReaded.Count == 0 || booksReaded == null)
+                // The .join is for booksReaded to have both the users reading books and each book details.
+                var booksReaded = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LIDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                    UserBook = userBook,
+                    Book = book
+                }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
+
+
+                //  This converts booksReaded to UserBooksViewModel
+                var userBooksViewModelList = booksReaded.Select(x => new UserBooksViewModel
+                {
+                    IdUser = x.UserBook.IdUser,
+                    IdBook = x.UserBook.IdBook,
+                    UserScore = x.UserBook.UserScore,
+                    ReadingStatus = x.UserBook.ReadingStatus,
+                    Id = x.Book.Id,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ReleaseYear = x.Book.ReleaseYear,
+                    ImageUrl = x.Book.ImageUrl,
+                    Score = x.Book.Score
+                })
+                .ToList();
+
+                if (booksReaded.Count == 0 || booksReaded == null)
                 {
                     return NotFound(new ResultViewModel<UserBook>("User has not readed any books."));
                 }
 
-                return Ok(new ResultViewModel<List<UserBook>>(booksReaded));
+                return Ok(new ResultViewModel<List<UserBooksViewModel>>(userBooksViewModelList));
             }
             catch (Exception ex)
             {
@@ -36,14 +58,35 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var booksReading = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LENDO").OrderByDescending(x => x.UserScore).ToListAsync();
+                // The .join is for booksReading to have both the users reading books and each book details.
+                var booksReading = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LENDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                    UserBook = userBook,
+                    Book = book
+                }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
+              
 
-                if(booksReading.Count == 0 || booksReading == null)
+                //  This converts booksReading to UserBooksViewModel
+                var userBooksViewModelList = booksReading.Select(x => new UserBooksViewModel
+                {
+                    IdUser = x.UserBook.IdUser,
+                    IdBook = x.UserBook.IdBook,
+                    UserScore = x.UserBook.UserScore,
+                    ReadingStatus = x.UserBook.ReadingStatus,
+                    Id = x.Book.Id,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ReleaseYear = x.Book.ReleaseYear,
+                    ImageUrl = x.Book.ImageUrl,
+                    Score = x.Book.Score
+                })
+                .ToList();
+
+                if (booksReading.Count == 0 || booksReading == null)
                 {
                     return NotFound(new ResultViewModel<UserBook>("User has no reading books"));
                 }
 
-                return Ok(new ResultViewModel<List<UserBook>>(booksReading));
+                return Ok(new ResultViewModel<List<UserBooksViewModel>>(userBooksViewModelList));
             }
             catch (Exception ex)
             {
@@ -58,14 +101,34 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var booksToRead = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "DESEJO").OrderByDescending(x => x.UserScore).ToListAsync();
+                var booksToRead = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "DESEJO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                    UserBook = userBook,
+                    Book = book
+                }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
 
-                if(booksToRead.Count == 0 || booksToRead == null)
+
+                //  This converts booksToRead to UserBooksViewModel
+                var userBooksViewModelList = booksToRead.Select(x => new UserBooksViewModel
+                {
+                    IdUser = x.UserBook.IdUser,
+                    IdBook = x.UserBook.IdBook,
+                    UserScore = x.UserBook.UserScore,
+                    ReadingStatus = x.UserBook.ReadingStatus,
+                    Id = x.Book.Id,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ReleaseYear = x.Book.ReleaseYear,
+                    ImageUrl = x.Book.ImageUrl,
+                    Score = x.Book.Score
+                })
+                .ToList();
+
+                if (booksToRead.Count == 0 || booksToRead == null)
                 {
                     return NotFound(new ResultViewModel<UserBook>("User has no wish to list books."));
                 }
 
-                return Ok(new ResultViewModel<List<UserBook>>(booksToRead));
+                return Ok(new ResultViewModel<List<UserBooksViewModel>>(userBooksViewModelList));
             }
             catch (Exception ex)
             {
