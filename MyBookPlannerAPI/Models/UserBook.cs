@@ -16,14 +16,11 @@ namespace MyBookPlannerAPI.Models
         [Column("IdUser", TypeName = "INT")]
         public int IdUser { get; set; }
 
-        public User User { get; set; }
-
         [Required]
         [ForeignKey("IdBook")]
         [Column("IdBook", TypeName = "INT")]
         public int IdBook { get; set; }
 
-        public Book Book {  get; set; }
 
         [Required]
         [Column("UserScore", TypeName = "FLOAT")]
