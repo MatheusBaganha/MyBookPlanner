@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace MyBookPlanner.Models
 {
@@ -26,6 +27,7 @@ namespace MyBookPlanner.Models
         [Required]
         [MaxLength(100)]
         [Column("PasswordHash", TypeName = "VARCHAR")]
+        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         [MaxLength(300)]
