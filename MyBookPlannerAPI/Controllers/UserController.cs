@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
+using MyBookPlannerAPI.ViewModels;
 using MyBookPlannerAPI.ViewModels.Users;
 
 namespace MyBookPlannerAPI.Controllers
@@ -18,15 +19,14 @@ namespace MyBookPlannerAPI.Controllers
                 var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound(new ResultViewModel<User>("User was not found."));
                 }
-                return Ok(user);
+                return Ok(new ResultViewModel<User>(user));
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(new ResultViewModel<User>("Internal error."));
             }
-
         }
 
         [HttpPost]
@@ -50,15 +50,15 @@ namespace MyBookPlannerAPI.Controllers
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return Created($"/user/{user.Id}", user);
+                return Created($"/user/{user.Id}", new ResultViewModel<User>(user));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "It was not possible to create the user.");
+                return StatusCode(500, new ResultViewModel<User>("It was not possible to create the user."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal error.");
+                return StatusCode(500, new ResultViewModel<User>("Internal error."));
             }
         }
 
@@ -71,7 +71,7 @@ namespace MyBookPlannerAPI.Controllers
                 var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
                 if(user == null) { 
-                    return NotFound(); 
+                    return NotFound(new ResultViewModel<User>("User was not found.")); 
                 }
 
                 user.Username = model.Username;
@@ -82,15 +82,15 @@ namespace MyBookPlannerAPI.Controllers
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
 
-                return Created($"/user/{user.Id}", user);
+                return Created($"/user/{user.Id}", new ResultViewModel<User>(user));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "It was not possible to update the user.");
+                return StatusCode(500, new ResultViewModel<User>("It was not possible to update the user."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal error.");
+                return StatusCode(500, new ResultViewModel<User>("Internal error."));
             }
         }
 
@@ -110,16 +110,16 @@ namespace MyBookPlannerAPI.Controllers
                 context.Users.Remove(user);
                 await context.SaveChangesAsync();
 
-                return Ok(user);
+                return Ok(new ResultViewModel<User>(user));
 
             }
             catch (DbUpdateException ex)
             {
-                return BadRequest("It was not possible to delete the user.");
+                return BadRequest(new ResultViewModel<User>("It was not possible to delete the user."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal error.");
+                return StatusCode(500, new ResultViewModel<User>("Internal error."));
             }
         }
     }

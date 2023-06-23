@@ -4,6 +4,7 @@ using MyBookPlannerAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 ConfigureServices(builder);
 
 builder.Services.AddControllers();
