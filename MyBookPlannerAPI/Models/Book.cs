@@ -34,13 +34,5 @@ namespace MyBookPlanner.Models
         [Required]
         [Column("Score", TypeName = "FLOAT")]
         public float Score { get; set; }
-
-        [AllowNull]
-        [Column("UserScore", TypeName = "FLOAT")]
-        public float UserScore { get; set; }
-
-        [MaxLength(50)]
-        [Column("ReadingStatus", TypeName = "VARCHAR")]
-        public string ReadingStatus { get; set; }
     }
 }
