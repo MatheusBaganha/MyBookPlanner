@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
+using MyBookPlannerAPI.ViewModels.Users;
 
 namespace MyBookPlannerAPI.Controllers
 {
@@ -30,17 +31,20 @@ namespace MyBookPlannerAPI.Controllers
 
         [HttpPost]
         [Route("/user")]
-        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromBody] User model)
+        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromBody] RegisterViewModel model)
         {
             try
             {
                 var user = new User
                 {
+                    // Values Id and Biography already defined.
+                    // Id is generated automatically in DB and Biography is default value.
                     Id = 0,
+                    Biography = "Olá. Estou usando o MyBookPlanner!",
+
                     Username = model.Username,
                     Email = model.Email,
-                    PasswordHash = model.PasswordHash,
-                    Biography = "Olá. Estou usando o MyBookPlanner!",
+                    PasswordHash = model.Password,
                 };
 
                 await context.Users.AddAsync(user);
@@ -60,7 +64,7 @@ namespace MyBookPlannerAPI.Controllers
 
         [HttpPut]
         [Route("/user/{id:int}")]
-        public async Task<IActionResult> PutUserAsync([FromServices] CatalogDataContext context, [FromRoute] int id, [FromBody]  User model)
+        public async Task<IActionResult> PutUserAsync([FromServices] CatalogDataContext context, [FromRoute] int id, [FromBody]  UpdateUserViewModel model)
         {
             try
             {
@@ -73,7 +77,7 @@ namespace MyBookPlannerAPI.Controllers
                 user.Username = model.Username;
                 user.Email = model.Email;
                 user.Biography = model.Biography;
-                user.PasswordHash = model.PasswordHash;
+                user.PasswordHash = model.Password;
 
                 context.Users.Update(user);
                 await context.SaveChangesAsync();

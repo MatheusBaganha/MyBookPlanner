@@ -7,7 +7,7 @@ namespace MyBookPlannerAPI.Controllers
     [Route("")]
 
     // Health Check API
-    // Verifica se a API está online ou não.
+    // Verify if API is online or not.
     public class HomeController : ControllerBase
     {
         public IActionResult Get()

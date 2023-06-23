@@ -5,8 +5,8 @@ using System;
 
 namespace MyBookPlannerAPI.Data
 {
-    //  DataContext é o banco em memoria.
-    //  Cada DbSet é uma das tabelas do banco.
+    //  DataContext is a in memory database.
+    //  Each DbSet is one of the tables in the database.
     public class CatalogDataContext : DbContext
     {
         public CatalogDataContext(DbContextOptions<CatalogDataContext> options) : base(options)

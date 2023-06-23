@@ -33,10 +33,3 @@ namespace MyBookPlannerAPI.Models
 
     }
 }
-    //IdUser INT,
-    //IdBook INT,
-    //UserScore FLOAT,
-    //ReadingStatus VARCHAR(50)
-
-    //CONSTRAINT FK_IdUser FOREIGN KEY (IdUser) REFERENCES[Users](Id),
-    //CONSTRAINT FK_IdBook FOREIGN KEY (IdBook) REFERENCES[Books](Id),
