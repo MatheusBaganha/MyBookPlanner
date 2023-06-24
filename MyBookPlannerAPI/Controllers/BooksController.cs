@@ -1,26 +1,21 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
-using MyBookPlannerAPI.Models;
 using MyBookPlannerAPI.ViewModels;
-using MyBookPlannerAPI.ViewModels.UserBooks;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace MyBookPlannerAPI.Controllers
 {
     [ApiController]
     public class BooksController : ControllerBase
     {
+
         [HttpGet]
-        [Route("/books/catalog/{userId:int}")]
-        public async Task<IActionResult> GetBooksAsync([FromServices] CatalogDataContext context, [FromRoute] int userId)
+        [Route("/books")]
+        public async Task<IActionResult> GetBooks([FromServices] CatalogDataContext context)
         {
             try
             {
-                // Books already comes in order of highest score for rankings.
                 var books = await context.Books.OrderByDescending(x => x.Score).ToListAsync();
 
                 if (books == null)
@@ -30,10 +25,9 @@ namespace MyBookPlannerAPI.Controllers
 
                 return Ok(new ResultViewModel<List<Book>>(books));
             }
-
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<Book>("Internal error."));
+                return BadRequest(new ResultViewModel<Book>("Internal error."));
             }
         }
 
