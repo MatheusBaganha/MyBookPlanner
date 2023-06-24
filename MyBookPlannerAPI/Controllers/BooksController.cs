@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
+using MyBookPlannerAPI.Models;
 using MyBookPlannerAPI.ViewModels;
+using MyBookPlannerAPI.ViewModels.UserBooks;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace MyBookPlannerAPI.Controllers
@@ -12,8 +15,8 @@ namespace MyBookPlannerAPI.Controllers
     public class BooksController : ControllerBase
     {
         [HttpGet]
-        [Route("/books")]
-        public async Task<IActionResult> GetBooksAsync([FromServices] CatalogDataContext context)
+        [Route("/books/catalog/{userId:int}")]
+        public async Task<IActionResult> GetBooksAsync([FromServices] CatalogDataContext context, [FromRoute] int userId)
         {
             try
             {

@@ -30,7 +30,6 @@ namespace MyBookPlannerAPI.Controllers
                     IdBook = x.UserBook.IdBook,
                     UserScore = x.UserBook.UserScore,
                     ReadingStatus = x.UserBook.ReadingStatus,
-                    Id = x.Book.Id,
                     Title = x.Book.Title,
                     Author = x.Book.Author,
                     ReleaseYear = x.Book.ReleaseYear,
@@ -63,7 +62,7 @@ namespace MyBookPlannerAPI.Controllers
                     UserBook = userBook,
                     Book = book
                 }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
-              
+
 
                 //  This converts booksReading to UserBooksViewModel
                 var userBooksViewModelList = booksReading.Select(x => new UserBooksViewModel
@@ -72,7 +71,6 @@ namespace MyBookPlannerAPI.Controllers
                     IdBook = x.UserBook.IdBook,
                     UserScore = x.UserBook.UserScore,
                     ReadingStatus = x.UserBook.ReadingStatus,
-                    Id = x.Book.Id,
                     Title = x.Book.Title,
                     Author = x.Book.Author,
                     ReleaseYear = x.Book.ReleaseYear,
@@ -114,7 +112,6 @@ namespace MyBookPlannerAPI.Controllers
                     IdBook = x.UserBook.IdBook,
                     UserScore = x.UserBook.UserScore,
                     ReadingStatus = x.UserBook.ReadingStatus,
-                    Id = x.Book.Id,
                     Title = x.Book.Title,
                     Author = x.Book.Author,
                     ReleaseYear = x.Book.ReleaseYear,
@@ -126,6 +123,48 @@ namespace MyBookPlannerAPI.Controllers
                 if (booksToRead.Count == 0 || booksToRead == null)
                 {
                     return NotFound(new ResultViewModel<UserBook>("User has no wish to list books."));
+                }
+
+                return Ok(new ResultViewModel<List<UserBooksViewModel>>(userBooksViewModelList));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<UserBook>("Internal error."));
+            }
+        }
+
+
+        [HttpGet]
+        [Route("/user-book/all-books/{id:int}")]
+        public async Task<IActionResult> GetUserAllBooks([FromServices] CatalogDataContext context, [FromRoute] int id)
+        {
+            try
+            {
+                // The .join is for booksReaded to have both the users reading books and each book details.
+                var allBooks = await context.UserBooks.Where(x => x.IdUser == id).Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                    UserBook = userBook,
+                    Book = book
+                }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
+
+
+                //  This converts allBooks to UserBooksViewModel
+                var userBooksViewModelList = allBooks.Select(x => new UserBooksViewModel
+                {
+                    IdUser = x.UserBook.IdUser,
+                    IdBook = x.UserBook.IdBook,
+                    UserScore = x.UserBook.UserScore,
+                    ReadingStatus = x.UserBook.ReadingStatus,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ReleaseYear = x.Book.ReleaseYear,
+                    ImageUrl = x.Book.ImageUrl,
+                    Score = x.Book.Score
+                })
+                .ToList();
+
+                if (allBooks.Count == 0 || allBooks == null)
+                {
+                    return NotFound(new ResultViewModel<UserBook>("User has not added any books."));
                 }
 
                 return Ok(new ResultViewModel<List<UserBooksViewModel>>(userBooksViewModelList));
