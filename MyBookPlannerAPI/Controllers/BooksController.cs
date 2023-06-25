@@ -12,11 +12,12 @@ namespace MyBookPlannerAPI.Controllers
 
         [HttpGet]
         [Route("/books")]
-        public async Task<IActionResult> GetBooks([FromServices] CatalogDataContext context)
+        public async Task<IActionResult> GetBooks([FromServices] CatalogDataContext context, [FromQuery] int page = 0, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var books = await context.Books.AsNoTracking().OrderByDescending(x => x.Score).ToListAsync();
+                // Books already comes in order of highest score for rankings.
+                var books = await context.Books.AsNoTracking().OrderByDescending(x => x.Score).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
                 if (books == null)
                 {
