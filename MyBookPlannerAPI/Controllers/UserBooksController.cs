@@ -212,6 +212,37 @@ namespace MyBookPlannerAPI.Controllers
             }
         }
 
-     
+        [HttpPut]
+        [Route("/user-book/update-book")]
+        public async Task<IActionResult> UpdateBook([FromServices] CatalogDataContext context, [FromBody] UserBook model)
+        {
+            try
+            {
+                var book = await context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == model.IdUser && x.IdBook == model.IdBook);
+
+                if(book == null)
+                {
+                    return NotFound(new ResultViewModel<UserBook>("User book was not found."));
+                }
+
+                book.IdBook = model.IdBook;
+                book.IdUser = model.IdUser;
+                book.ReadingStatus = model.ReadingStatus;
+                book.UserScore = float.Parse(model.UserScore.ToString("0.0"));
+
+                context.UserBooks.Update(book);
+                await context.SaveChangesAsync();
+
+                return Created($"/user-book/{book.IdUser}/{book.IdBook}", book);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new ResultViewModel<UserBook>("It was not possible to update the book."));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultViewModel<UserBook>("Internal error."));
+            }
+        }
     }
 }
