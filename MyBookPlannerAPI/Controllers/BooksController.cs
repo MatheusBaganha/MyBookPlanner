@@ -19,7 +19,7 @@ namespace MyBookPlannerAPI.Controllers
                 // Books already comes in order of highest score for rankings.
                 var books = await context.Books.AsNoTracking().OrderByDescending(x => x.Score).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
-                if (books == null)
+                if (books.Count() == 0 || books == null)
                 {
                     return NotFound(new ResultViewModel<Book>("Books was not found."));
                 }
