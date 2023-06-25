@@ -244,5 +244,35 @@ namespace MyBookPlannerAPI.Controllers
                 return StatusCode(500, new ResultViewModel<UserBook>("Internal error."));
             }
         }
+
+
+        [HttpDelete]
+        [Route("/user-book/delete-book/{idUser:int}/{idBook:int}")]
+        public async Task<IActionResult> DeleteBook([FromServices] CatalogDataContext context, [FromRoute] int idUser, [FromRoute] int idBook)
+        {
+            try
+            {
+                var book = await context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == idUser && x.IdBook == idBook);
+
+                if (book == null)
+                {
+                    return NotFound(new ResultViewModel<UserBook>("User book was not found."));
+                }
+
+                context.UserBooks.Remove(book);
+                await context.SaveChangesAsync();
+
+                return Ok(new ResultViewModel<UserBook>(book));
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(new ResultViewModel<User>("It was not possible to delete the user book."));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultViewModel<User>("Internal error."));
+            }
+            
+        }
     }
 }
