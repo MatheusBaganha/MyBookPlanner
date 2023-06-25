@@ -16,7 +16,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
                     return NotFound(new ResultViewModel<User>("User was not found."));

@@ -16,7 +16,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var books = await context.Books.OrderByDescending(x => x.Score).ToListAsync();
+                var books = await context.Books.AsNoTracking().OrderByDescending(x => x.Score).ToListAsync();
 
                 if (books == null)
                 {
@@ -37,7 +37,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var book = await context.Books.FirstOrDefaultAsync(x => x.Id == id);
+                var book = await context.Books.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
                 if (book == null)
                 {

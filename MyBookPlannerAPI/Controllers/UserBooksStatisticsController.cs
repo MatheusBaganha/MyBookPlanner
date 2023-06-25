@@ -15,7 +15,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var userBooks = await context.UserBooks.Where(x => x.IdUser == idUser).ToListAsync();
+                var userBooks = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == idUser).ToListAsync();
 
                 if(userBooks.Count == 0 || userBooks == null)
                 {
@@ -49,7 +49,7 @@ namespace MyBookPlannerAPI.Controllers
             {
                 // The .join is for bestBook to have both the user book and the book details.
                 // It will bring us the book with the user highest score.
-                var bestBook = await context.UserBooks.Where(x => x.IdUser == idUser).Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new
+                var bestBook = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == idUser).Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new
                 {
                     UserBook = userBook,
                     Book = book

@@ -18,7 +18,7 @@ namespace MyBookPlannerAPI.Controllers
             try
             {
                 // The .join is for booksReaded to have both the users reading books and each book details.
-                var booksReaded = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LIDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                var booksReaded = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LIDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
                     UserBook = userBook,
                     Book = book
                 }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
@@ -59,7 +59,7 @@ namespace MyBookPlannerAPI.Controllers
             try
             {
                 // The .join is for booksReading to have both the users reading books and each book details.
-                var booksReading = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LENDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                var booksReading = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "LENDO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
                     UserBook = userBook,
                     Book = book
                 }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
@@ -100,7 +100,7 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var booksToRead = await context.UserBooks.Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "DESEJO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                var booksToRead = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == id && x.ReadingStatus.ToUpper() == "DESEJO").Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
                     UserBook = userBook,
                     Book = book
                 }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();
@@ -142,7 +142,7 @@ namespace MyBookPlannerAPI.Controllers
             try
             {
                 // The .join is for booksReaded to have both the users reading books and each book details.
-                var allBooks = await context.UserBooks.Where(x => x.IdUser == id).Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
+                var allBooks = await context.UserBooks.AsNoTracking().Where(x => x.IdUser == id).Join(context.Books, userBook => userBook.IdBook, book => book.Id, (userBook, book) => new {
                     UserBook = userBook,
                     Book = book
                 }).OrderByDescending(x => x.UserBook.UserScore).ToListAsync();

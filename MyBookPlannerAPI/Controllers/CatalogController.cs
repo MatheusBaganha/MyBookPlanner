@@ -17,7 +17,7 @@ namespace MyBookPlannerAPI.Controllers
             try
             {
                 // Books already comes in order of highest score for rankings.
-                var books = await context.Books.OrderByDescending(x => x.Score).ToListAsync();
+                var books = await context.Books.AsNoTracking().OrderByDescending(x => x.Score).ToListAsync();
 
                 // Prevents the DB to receive another query from allUserBooks.
                 if (books == null)
