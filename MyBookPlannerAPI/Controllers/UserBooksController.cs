@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.Models;
 using MyBookPlannerAPI.ViewModels;
@@ -174,5 +175,43 @@ namespace MyBookPlannerAPI.Controllers
                 return BadRequest(new ResultViewModel<UserBook>("Internal error."));
             }
         }
+
+
+        [HttpPost]
+        [Route("/user-book/add-book")]
+        public async Task<IActionResult> AddBook([FromServices] CatalogDataContext context, [FromBody] UserBook model)
+        {
+            try
+            {
+                var userAlreadyHasBook = await context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == model.IdUser && x.IdBook == model.IdBook);
+
+                if(userAlreadyHasBook != null)
+                {
+                    return StatusCode(409, new ResultViewModel<UserBook>("User already has that book."));
+                }
+                var userBook = new UserBook
+                {
+                    IdBook = model.IdBook,
+                    IdUser = model.IdUser,
+                    ReadingStatus = model.ReadingStatus,
+                    UserScore = model.UserScore
+                };
+
+                await context.UserBooks.AddAsync(userBook);
+                await context.SaveChangesAsync();
+
+                return Created($"/user-book/{userBook.IdUser}/{userBook.IdBook}", userBook);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new ResultViewModel<UserBook>("It was not possible to add the book."));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<UserBook>("Internal error."));
+            }
+        }
+
+     
     }
 }
