@@ -35,6 +35,13 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
+                var userAlreadyExists = await context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+
+                if(userAlreadyExists != null)
+                {
+                    return StatusCode(409, new ResultViewModel<User>("Someone using that email adress already exists."));
+                }
+
                 var user = new User
                 {
                     // Values Id and Biography already defined.
