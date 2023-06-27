@@ -5,48 +5,57 @@ using System.Text;
 using MyBookPlannerAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
-
-builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-    ).AddJwtBearer(x =>
-    {
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            // Se valida ou não a chave de assinatura
-            ValidateIssuerSigningKey = true,
-
-            // Como ele valida essa chave assinatura
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-});
-
+ConfigureAuthentication(builder);
 ConfigureServices(builder);
 
-builder.Services.AddControllers();
-builder.Services.AddTransient<TokenService>();
-
-
-
 var app = builder.Build();
-app.MapControllers();
 
+app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
+app.Run();
+
 void ConfigureServices(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<CatalogDataContext>(options => options.UseSqlServer(connectionString));
+
+    builder.Services.AddControllers();
+    builder.Services.AddTransient<TokenService>();
 }
 
+void ConfigureAuthentication(WebApplicationBuilder builder)
+{
+    // configuration is for us to have acess to the appsettings before the build of the app.
+    var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
 
-app.Run();
+    Configuration.JwtKey = configuration.GetValue<string>("JwtKey");
+
+    var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+
+    builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }
+        ).AddJwtBearer(x =>
+        {
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                // Whether or not to validate the signature key.
+                ValidateIssuerSigningKey = true,
+
+                // How does it validate this signature key.
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+}
