@@ -24,7 +24,6 @@ namespace MyBookPlannerAPI.Services
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim("username", user.Username),
                     new Claim("biography", user.Biography),
-                    new Claim(ClaimTypes.Role, "user")
                 }),
                 Expires = DateTime.UtcNow.AddHours(8),
 
