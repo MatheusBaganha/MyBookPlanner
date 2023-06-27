@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MyBookPlannerAPI.Controllers
 {
 
     [ApiController]
     [Route("")]
+    [AllowAnonymous]
 
     // Health Check API
     // Verify if API is online or not.

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
@@ -8,6 +9,7 @@ using MyBookPlannerAPI.ViewModels.Users;
 namespace MyBookPlannerAPI.Controllers
 {
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         [HttpGet]
@@ -26,46 +28,6 @@ namespace MyBookPlannerAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new ResultViewModel<User>("Internal error."));
-            }
-        }
-
-        [HttpPost]
-        [Route("/user")]
-        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromBody] RegisterViewModel model)
-        {
-            try
-            {
-                var userAlreadyExists = await context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
-
-                if(userAlreadyExists != null)
-                {
-                    return StatusCode(409, new ResultViewModel<User>("Someone using that email adress already exists."));
-                }
-
-                var user = new User
-                {
-                    // Values Id and Biography already defined.
-                    // Id is generated automatically in DB and Biography is default value.
-                    Id = 0,
-                    Biography = "Olá. Estou usando o MyBookPlanner!",
-
-                    Username = model.Username,
-                    Email = model.Email,
-                    PasswordHash = model.Password,
-                };
-
-                await context.Users.AddAsync(user);
-                await context.SaveChangesAsync();
-
-                return Created($"/user/{user.Id}", new ResultViewModel<User>(user));
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new ResultViewModel<User>("It was not possible to create the user."));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<User>("Internal error."));
             }
         }
 

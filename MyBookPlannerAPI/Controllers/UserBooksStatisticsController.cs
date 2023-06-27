@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
@@ -7,6 +8,8 @@ using MyBookPlannerAPI.ViewModels.UserBooks;
 
 namespace MyBookPlannerAPI.Controllers
 {
+    [ApiController]
+    [Authorize]
     public class UserBooksStatisticsController : ControllerBase
     {
         [HttpGet]
