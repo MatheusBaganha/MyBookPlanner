@@ -9,6 +9,11 @@ namespace MyBookPlannerAPI.ViewModels.Users
         public string Username { get; set; }
 
         [Required]
+        [EmailAddress(ErrorMessage = "Email needs to be a valid email adress.")]
+        public string Email { get; set; }
+
+
+        [Required]
         [StringLength(300, MinimumLength = 0, ErrorMessage = "Biography needs to have less than 300 characters."),]
         public string Biography { get; set; }
     }

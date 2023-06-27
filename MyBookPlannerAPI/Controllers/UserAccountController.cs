@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Models;
@@ -6,6 +7,7 @@ using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.Services;
 using MyBookPlannerAPI.ViewModels;
 using MyBookPlannerAPI.ViewModels.Users;
+using SecureIdentity.Password;
 
 namespace MyBookPlannerAPI.Controllers
 {
@@ -24,7 +26,11 @@ namespace MyBookPlannerAPI.Controllers
 
                 if (user == null)
                 {
-                    return NotFound(new ResultViewModel<User>("User email or password is invalid."));
+                    return StatusCode(401, new ResultViewModel<User>("User email or password is invalid."));
+                }
+
+                if(!PasswordHasher.Verify(user.PasswordHash, model.Password)) {
+                    return StatusCode(401, new ResultViewModel<User>("User email or password is invalid."));
                 }
 
                 var token = tokenService.GenerateToken(user);
@@ -60,7 +66,7 @@ namespace MyBookPlannerAPI.Controllers
 
                     Username = model.Username,
                     Email = model.Email,
-                    PasswordHash = model.Password,
+                    PasswordHash = PasswordHasher.Hash(model.Password),
                 };
 
                 await context.Users.AddAsync(user);

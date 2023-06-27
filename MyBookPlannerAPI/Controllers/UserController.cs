@@ -5,6 +5,7 @@ using MyBookPlanner.Models;
 using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.ViewModels;
 using MyBookPlannerAPI.ViewModels.Users;
+using SecureIdentity.Password;
 
 namespace MyBookPlannerAPI.Controllers
 {
@@ -46,8 +47,7 @@ namespace MyBookPlannerAPI.Controllers
                 user.Username = model.Username;
                 user.Email = model.Email;
                 user.Biography = model.Biography;
-                user.PasswordHash = model.Password;
-
+                
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
 
