@@ -2,7 +2,7 @@
 
 namespace MyBookPlannerAPI.ViewModels.Users
 {
-    public class UpdateUserViewModel : UserViewModel
+    public class UpdateUserViewModel
     {
         [Required]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Username needs to have at least 3 characters, and the maximum of 100 characters.")]

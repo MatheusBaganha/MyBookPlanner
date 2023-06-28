@@ -44,6 +44,13 @@ namespace MyBookPlannerAPI.Controllers
                     return NotFound(new ResultViewModel<User>("User was not found.")); 
                 }
 
+                var emailAlreadyInUse = await context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+
+                if (emailAlreadyInUse != null)
+                {
+                    return StatusCode(401, new ResultViewModel<User>("This email adress is already in use."));
+                }
+
                 user.Username = model.Username;
                 user.Email = model.Email;
                 user.Biography = model.Biography;
