@@ -191,13 +191,29 @@ namespace MyBookPlannerAPI.Controllers
                 {
                     return StatusCode(409, new ResultViewModel<UserBook>("User already has that book."));
                 }
+
                 var userBook = new UserBook
                 {
                     IdBook = model.IdBook,
                     IdUser = model.IdUser,
                     ReadingStatus = model.ReadingStatus,
-                    UserScore = model.UserScore
+                    UserScore = float.Parse(model.UserScore.ToString("0.0"))
                 };
+
+                Book? book;
+
+                // This will update the average book score.
+                // It will only update when the user already had readed the book.
+                if (model.ReadingStatus.ToLower() == "lido")
+                {
+                    book = await context.Books.FirstOrDefaultAsync(x => x.Id == model.IdBook);
+
+                    if (book != null)
+                    {
+                        book.Score = (book.Score + userBook.UserScore) / 2;
+                        context.Books.Update(book);
+                    }
+                }
 
                 await context.UserBooks.AddAsync(userBook);
                 await context.SaveChangesAsync();
@@ -220,22 +236,37 @@ namespace MyBookPlannerAPI.Controllers
         {
             try
             {
-                var book = await context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == model.IdUser && x.IdBook == model.IdBook);
+                var userBook = await context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == model.IdUser && x.IdBook == model.IdBook);
 
-                if(book == null)
+                if(userBook == null)
                 {
                     return NotFound(new ResultViewModel<UserBook>("User book was not found."));
                 }
 
-                book.IdBook = model.IdBook;
-                book.IdUser = model.IdUser;
-                book.ReadingStatus = model.ReadingStatus;
-                book.UserScore = float.Parse(model.UserScore.ToString("0.0"));
+                userBook.IdBook = model.IdBook;
+                userBook.IdUser = model.IdUser;
+                userBook.ReadingStatus = model.ReadingStatus;
+                userBook.UserScore = float.Parse(model.UserScore.ToString("0.0"));
 
-                context.UserBooks.Update(book);
+                Book? book;
+
+                // This will update the average book score.
+                // It will only update when the user already had readed the book.
+                if (model.ReadingStatus.ToLower() == "lido")
+                {
+                    book = await context.Books.FirstOrDefaultAsync(x => x.Id == model.IdBook);
+
+                    if(book != null)
+                    {
+                        book.Score = (book.Score + userBook.UserScore) / 2;
+                        context.Books.Update(book);
+                    }
+                }
+
+                context.UserBooks.Update(userBook);
                 await context.SaveChangesAsync();
 
-                return Created($"/user-book/{book.IdUser}/{book.IdBook}", book);
+                return Created($"/user-book/{userBook.IdUser}/{userBook.IdBook}", userBook);
             }
             catch (DbUpdateException ex)
             {
