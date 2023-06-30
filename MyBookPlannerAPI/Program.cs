@@ -17,6 +17,12 @@ var app = builder.Build();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+
+app.UseHttpsRedirection();
 app.Run();
 
 void ConfigureServices(WebApplicationBuilder builder)
