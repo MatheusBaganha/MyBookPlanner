@@ -258,7 +258,7 @@ namespace MyBookPlannerAPI.Controllers
 
                     if(book != null)
                     {
-                        book.Score = (book.Score + userBook.UserScore) / 2;
+                        book.Score = float.Parse(((book.Score + userBook.UserScore) / 2).ToString("0.0"));
                         context.Books.Update(book);
                     }
                 }
