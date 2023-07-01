@@ -22,7 +22,14 @@ namespace MyBookPlannerAPI.Controllers
 
                 if(userBooks.Count == 0 || userBooks == null)
                 {
-                    return NotFound(new ResultViewModel<UserBooksStatisticsViewModel>("User books was not found."));
+                    // When the is a new user in the catalog, he won't have any books to be calculated.
+                    var statisticsOfRecentUser = new UserBooksStatisticsViewModel
+                    {
+                        reading = 0,
+                        readed = 0,
+                        wishToRead = 0
+                    };
+                    return Ok(new ResultViewModel<UserBooksStatisticsViewModel>(statisticsOfRecentUser));
                 }
 
                 var readingBooks = userBooks.Count(x => x.ReadingStatus.ToUpper() == "LENDO");
@@ -60,7 +67,18 @@ namespace MyBookPlannerAPI.Controllers
 
                 if (bestBook == null)
                 {
-                    return NotFound(new ResultViewModel<UserBooksStatisticsViewModel>("User book was not found."));
+                    // Generic book for new users that don't have books in their accounts.
+                    var bestBookModelEmpty = new UserBestBookViewModel
+                    {
+                        Title = "MyBookPlannerBook",
+                        Author = "Author MBP",
+                        ImageUrl = "https://drive.google.com/uc?export=view&id=1UuXzpVHAUeBW3o1YTVyprNkJ8FPM6MHW",
+                        ReleaseYear = DateTime.UtcNow.Year,
+                        UserScore = 10,
+                        IdUser = 0,
+                        IdBook = 0
+                    };
+                    return Ok(new ResultViewModel<UserBestBookViewModel>(bestBookModelEmpty));
                 }
 
                 //  This converts bestBook to UserBestBooks type.
