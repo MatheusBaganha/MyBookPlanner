@@ -35,7 +35,7 @@ namespace MyBookPlannerAPI.Controllers
 
                 var token = tokenService.GenerateToken(user);
 
-                return Ok(token);
+                return Ok( new { usertoken = token });
             }
             catch (Exception ex)
             {
