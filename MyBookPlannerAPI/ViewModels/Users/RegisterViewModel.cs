@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MyBookPlannerAPI.ViewModels.Users
 {
@@ -6,5 +7,6 @@ namespace MyBookPlannerAPI.ViewModels.Users
     {
         [Required]
         public string Username { get; set; }
+ 
     }
 }

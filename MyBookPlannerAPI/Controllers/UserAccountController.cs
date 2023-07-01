@@ -46,7 +46,7 @@ namespace MyBookPlannerAPI.Controllers
 
         [HttpPost]
         [Route("/user/register")]
-        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromBody] RegisterViewModel model)
+        public async Task<IActionResult> PostUserAsync([FromServices] CatalogDataContext context, [FromServices] TokenService tokenService,[FromBody] RegisterViewModel model)
         {
             try
             {
@@ -69,9 +69,11 @@ namespace MyBookPlannerAPI.Controllers
                     PasswordHash = PasswordHasher.Hash(model.Password),
                 };
 
+
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
+                           
                 return Created($"/user/{user.Id}", new ResultViewModel<User>(user));
             }
             catch (DbUpdateException ex)

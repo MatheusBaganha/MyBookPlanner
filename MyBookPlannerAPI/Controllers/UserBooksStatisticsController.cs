@@ -63,10 +63,19 @@ namespace MyBookPlannerAPI.Controllers
                     return NotFound(new ResultViewModel<UserBooksStatisticsViewModel>("User book was not found."));
                 }
 
-                //  This converts bestBook to Books type.
-                var bestBookModel = bestBook.Book;
+                //  This converts bestBook to UserBestBooks type.
+                var bestBookModel = new UserBestBookViewModel
+                {
+                    Title = bestBook.Book.Title,
+                    Author = bestBook.Book.Author,
+                    ImageUrl = bestBook.Book.ImageUrl,
+                    ReleaseYear = bestBook.Book.ReleaseYear,
+                    UserScore = bestBook.UserBook.UserScore,
+                    IdUser = bestBook.UserBook.IdUser,
+                    IdBook = bestBook.UserBook.IdBook
+                };
 
-                return Ok(new ResultViewModel<Book>(bestBookModel));
+                return Ok(new ResultViewModel<UserBestBookViewModel>(bestBookModel));
             }
             catch (Exception ex)
             {
