@@ -14,9 +14,11 @@ Esta é uma API de catálogo de livros desenvolvida com ASP.NET, Entity Framewor
    - Os usuários podem criar uma conta fornecendo um nome, email e senha.
    - Os usuários podem fazer login usando suas credenciais de conta.
 
-2. Adicionar Livros:
+2. Gerenciamento de Livros:
    - Os usuários autenticados podem adicionar livros disponíveis no catálogo à sua conta pessoal.
+   - Os usuários podem atualizar as notas e status de seus livros, bem como deletar eles de sua conta.
    - Cada livro adicionado pode ter uma nota e um status de leitura associados a ele.
+   - Ao adicionar ou atualizar algum livro com o status definido como 'Lido', a nota média do livro será atualizada de acordo com a nota do usuário. 
 
 3. Gerenciar Perfil:
    - Os usuários podem alterar informações do perfil, como nome de usuário, biografia e endereço de e-mail.
