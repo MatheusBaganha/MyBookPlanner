@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyBookPlanner.Models;
+using MyBookPlanner.Domain.Models;
 using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.Services;
 using MyBookPlannerAPI.ViewModels;
 using MyBookPlannerAPI.ViewModels.Users;
 using SecureIdentity.Password;
 
-namespace MyBookPlannerAPI.Controllers
+namespace MyBookPlanner.WebApi.Controllers
 {
     [ApiController]
     [AllowAnonymous]

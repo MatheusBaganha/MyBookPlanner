@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBookPlannerAPI.ViewModels.Users
+namespace MyBookPlanner.Domain.ViewModels.Users
 {
     public class UpdateUserViewModel
     {

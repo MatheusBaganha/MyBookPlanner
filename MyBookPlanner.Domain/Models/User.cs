@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace MyBookPlanner.Models
+namespace MyBookPlanner.Domain.Models
 {
 
     [Table("Users")]

@@ -1,20 +1,21 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using MyBookPlanner.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using MyBookPlanner.Domain.Models;
 
-namespace MyBookPlannerAPI.Services
+namespace MyBookPlanner.WebApi.Configurations
 {
-    // This class generate the token.
-    public class TokenService
+    public static class JwtConfiguration
     {
-        public string GenerateToken(User user)
+        public static string JwtKey { get; set; }
+
+        public static string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             // Key of the token needs to be an array of byte.
-            var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+            var key = Encoding.ASCII.GetBytes(JwtKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

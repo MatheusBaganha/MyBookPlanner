@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using MyBookPlannerAPI.Data;
 using MyBookPlannerAPI.Services;
 using System.Text;
-using MyBookPlannerAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MyBookPlanner.WebApi.Configurations;
 
 
 var builder = WebApplication.CreateBuilder(args);

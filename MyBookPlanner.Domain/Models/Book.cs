@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace MyBookPlanner.Models
+namespace MyBookPlanner.Domain.Models
 {
     [Table("Books")]
     public class Book

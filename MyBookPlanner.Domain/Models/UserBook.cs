@@ -1,13 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MyBookPlanner.Models;
+﻿using MyBookPlanner.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace MyBookPlannerAPI.Models
+namespace MyBookPlanner.Domain.Models
 {
     [Table("UserBooks")]
     [PrimaryKey("IdUser","IdBook")]

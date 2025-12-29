@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace MyBookPlannerAPI.ViewModels.Users
+namespace MyBookPlanner.Domain.ViewModels.Users
 {
     public class UserViewModel
     {
