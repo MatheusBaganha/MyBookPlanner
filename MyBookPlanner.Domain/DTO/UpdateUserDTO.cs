@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyBookPlanner.Domain.ViewModels.Users
+namespace MyBookPlanner.Domain.DTO
 {
     public class UpdateUserDTO
     {

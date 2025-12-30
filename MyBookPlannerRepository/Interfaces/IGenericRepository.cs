@@ -22,7 +22,7 @@ namespace MyBookPlanner.Repository.Interfaces
         ) where T : class;
     
 
-            Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
+        Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task<int> CountAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
 
         // ------------------- Modifications -------------------

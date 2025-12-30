@@ -1,13 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-using MyBookPlannerAPI.Data;
-using MyBookPlannerAPI.Services;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MyBookPlanner.WebApi.Configurations;
+using MyBookPlanner.Domain.Config;
+using MyBookPlanner.Repository.Data;
+using MyBookPlanner.Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 ConfigureAuthentication(builder);
 ConfigureServices(builder);
@@ -31,40 +32,32 @@ app.Run();
 void ConfigureServices(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<CatalogDataContext>(options => options.UseSqlServer(connectionString));
+    builder.Services.AddDbContext<MyBookPlannerDataContext>(options => options.UseSqlite(connectionString));
 
     builder.Services.AddControllers();
     builder.Services.AddTransient<TokenService>();
 }
 
+
+
 void ConfigureAuthentication(WebApplicationBuilder builder)
 {
-    // configuration is for us to have acess to the appsettings before the build of the app.
-    var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json")
-    .Build();
-
-    Configuration.JwtKey = configuration.GetValue<string>("JwtKey");
-
-    var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+    // Get the key directly from appsettings.json via the IOptions pattern.
+    var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:Key"]);
 
     builder.Services.AddAuthentication(x =>
     {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-        ).AddJwtBearer(x =>
+    })
+    .AddJwtBearer(x =>
+    {
+        x.TokenValidationParameters = new TokenValidationParameters
         {
-            x.TokenValidationParameters = new TokenValidationParameters
-            {
-                // Whether or not to validate the signature key.
-                ValidateIssuerSigningKey = true,
-
-                // How does it validate this signature key.
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false
-            };
-        });
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 }
