@@ -4,7 +4,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MyBookPlanner.Domain.Config;
 using MyBookPlanner.Domain.Constantes;
 using MyBookPlanner.Domain.DTO;
 using MyBookPlanner.Domain.Models;
@@ -21,11 +23,12 @@ namespace MyBookPlanner.Service.Services
     {
         private IGenericRepository _genericRepository;
         private IUserRepository _userRepository;
-
-        public AuthService(IGenericRepository genericRepository, IUserRepository userRepository)
+        private TokenService _tokenService;
+        public AuthService(IGenericRepository genericRepository, IUserRepository userRepository, TokenService tokenService)
         {
             _genericRepository = genericRepository;
             _userRepository = userRepository;
+            _tokenService = tokenService;
         }
         public async Task<Result<UserViewModel>> Login(UserLoginDTO user)
         {
@@ -35,15 +38,15 @@ namespace MyBookPlanner.Service.Services
 
                 if (userFound is null)
                 {
-                    return Result<UserViewModel>.Unauthorized(ErrorMessages.UserNotFound);
+                    return Result<UserViewModel>.Unauthorized(ErrorMessages.InvalidUser);
                 }
 
                 if (!PasswordHasher.Verify(userFound.PasswordHash, user.Password))
                 {
-                    return Result<UserViewModel>.Unauthorized(ErrorMessages.UserNotFound);
+                    return Result<UserViewModel>.Unauthorized(ErrorMessages.InvalidUser);
                 }
 
-                var token = this.GenerateToken(userFound);
+                var token = _tokenService.GenerateToken(userFound);
 
                 var userViewModel = new UserViewModel()
                 {
@@ -90,7 +93,7 @@ namespace MyBookPlanner.Service.Services
                     return Result<UserViewModel>.Error(ErrorMessages.ErrorOnCreating);
                 }
 
-                var token = this.GenerateToken(userToCreate);
+                var token = _tokenService.GenerateToken(userToCreate);
 
                 var userViewModel = new UserViewModel()
                 {

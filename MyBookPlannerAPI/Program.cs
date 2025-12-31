@@ -31,6 +31,7 @@ app.Run();
 
 void ConfigureServices(WebApplicationBuilder builder)
 {
+    // definir qual banco é aqui provavelmente, entre QA, DEV, PROD
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<MyBookPlannerDataContext>(options => options.UseSqlite(connectionString));
 
