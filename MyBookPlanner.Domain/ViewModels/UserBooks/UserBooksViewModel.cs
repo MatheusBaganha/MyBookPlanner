@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-
+﻿
 namespace MyBookPlannerAPI.ViewModels.UserBooks
 {
     public class UserBooksViewModel

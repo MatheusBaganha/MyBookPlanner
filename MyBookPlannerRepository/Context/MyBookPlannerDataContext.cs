@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Domain.Models;
-using System;
+using MyBookPlanner.Repository.Context.Configurations;
 
 namespace MyBookPlanner.Repository.Data
 {
@@ -8,13 +9,18 @@ namespace MyBookPlanner.Repository.Data
     {
         public MyBookPlannerDataContext(DbContextOptions<MyBookPlannerDataContext> options) : base(options)
         {
-            
         }
-        
+
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<UserBook> UserBooks { get; set; }
-      
-    }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyBookPlannerDataContext).Assembly);
+        }
+
+    }
 }

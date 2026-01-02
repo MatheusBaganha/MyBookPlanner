@@ -4,35 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace MyBookPlanner.Domain.Models
 {
-    [Table("Books")]
     public class Book
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        [Column("Title", TypeName = "VARCHAR")]
         public string Title { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        [Column("Author", TypeName = "VARCHAR")]
         public string Author { get; set; }
-
-        [Required]
-        [Column("ReleaseYear", TypeName = "INT")]
         public int ReleaseYear { get; set; }
-
-        [Required]
-        [MaxLength(500)]
-        [Column("ImageUrl", TypeName = "VARCHAR")]
         public string ImageUrl { get; set; }
-
-
-        [Required]
-        [Column("Score", TypeName = "FLOAT")]
         public float Score { get; set; }
+
+        public ICollection<UserBook> UserBooks { get; set; } = new List<UserBook>();
     }
 }

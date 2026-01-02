@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyBookPlanner.Domain\MyBookPlanner.Domain.csproj" />
+    <ProjectReference Include="..\MyBookPlanner.Utils\MyBookPlanner.Utils.csproj" />
     <ProjectReference Include="..\MyBookPlannerRepository\MyBookPlanner.Repository.csproj" />
   </ItemGroup>
 
