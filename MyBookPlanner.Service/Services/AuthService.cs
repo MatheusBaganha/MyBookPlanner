@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using MyBookPlanner.Domain.Config;
-using MyBookPlanner.Domain.Constantes;
+﻿using MyBookPlanner.Domain.Constantes;
 using MyBookPlanner.Domain.DTO;
 using MyBookPlanner.Domain.Models;
 using MyBookPlanner.Domain.ViewModels;
 using MyBookPlanner.Domain.ViewModels.Users;
 using MyBookPlanner.Repository.Interfaces;
 using MyBookPlanner.Service.Interfaces;
-using Newtonsoft.Json.Linq;
 using SecureIdentity.Password;
 
 namespace MyBookPlanner.Service.Services

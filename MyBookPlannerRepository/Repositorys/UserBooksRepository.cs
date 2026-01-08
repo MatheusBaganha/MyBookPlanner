@@ -18,6 +18,14 @@ namespace MyBookPlanner.Repository.Repositorys
             _genericRepository = genericRepository;
             _context = context;
         }
+
+        public async Task<UserBook> DoesUserBookExists(int idUser, int idBook)
+        {
+            var book = await _context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == idUser && x.IdBook == idBook);
+            return book;
+        }
+
+
         public async Task<UserBestBookViewModel> GetUserBestBook(int idUser)
         {
             var bestBook = await _context.UserBooks
@@ -46,6 +54,26 @@ namespace MyBookPlanner.Repository.Repositorys
         {
             var userBooks = await _genericRepository.GetList<UserBook>(x => x.IdUser == idUser).AsNoTracking().OrderByDescending(x => x.UserScore).ToListAsync();
             return userBooks;
+        }
+
+        public async Task<List<UserBook>> GetUserBooksByStatus(int idUser, string status)
+        {
+            var query = _context.UserBooks
+                   .AsNoTracking()
+                   .Where(x => x.IdUser == idUser);
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(x => x.ReadingStatus.ToUpper() == status.ToUpper());
+            }
+
+            var books = await query
+                .Include(x => x.Book)
+                .OrderByDescending(x => x.UserScore)
+                .ToListAsync();
+
+            return books;
+
         }
     }
 }

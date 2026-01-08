@@ -8,7 +8,6 @@ namespace MyBookPlanner.WebApi.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-
     public class UserController : ControllerBase
     {
         private IUserService _userService;

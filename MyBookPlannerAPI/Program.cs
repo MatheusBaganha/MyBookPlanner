@@ -1,64 +1,44 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using MyBookPlanner.Domain.Config;
 using MyBookPlanner.Repository.Data;
-using MyBookPlanner.Service.Services;
+using MyBookPlanner.WebApi.Config;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-ConfigureAuthentication(builder);
-ConfigureServices(builder);
+// Services
+builder.Services
+    .AddDatabase(builder.Configuration)
+    .AddApplicationServices()
+    .AddCorsConfiguration()
+    .AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
-app.MapControllers();
 
-app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-
+// Middleware
 app.UseHttpsRedirection();
+
+// Name of the policy configured
+app.UseCors("MyBookPlannerPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+// Endpoints (always at last)
+app.MapControllers();
+
+
+// To make things easier since it's just a side project, those books will be inserted in this generic way.
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MyBookPlannerDataContext>();
+    context.Database.EnsureCreated(); // Ensures that the database and tables exist.
+    DbSeeder.SeedBooks(context);  // Populate the books
+}
+
 app.Run();
 
-void ConfigureServices(WebApplicationBuilder builder)
-{
-    // definir qual banco é aqui provavelmente, entre QA, DEV, PROD
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<MyBookPlannerDataContext>(options => options.UseSqlite(connectionString));
-
-    builder.Services.AddControllers();
-    builder.Services.AddTransient<TokenService>();
-}
 
 
 
-void ConfigureAuthentication(WebApplicationBuilder builder)
-{
-    // Get the key directly from appsettings.json via the IOptions pattern.
-    var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:Key"]);
-
-    builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(x =>
-    {
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-}

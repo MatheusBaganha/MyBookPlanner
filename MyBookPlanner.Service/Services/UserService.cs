@@ -88,7 +88,7 @@ namespace MyBookPlanner.Service.Services
 
                 if (user is null)
                 {
-                    return Result<UserViewModel>.Error("User was not found.");
+                    return Result<UserViewModel>.Error(ErrorMessages.UserNotFound);
                 }
 
                 await _genericRepository.DeleteAsync<User>(user);

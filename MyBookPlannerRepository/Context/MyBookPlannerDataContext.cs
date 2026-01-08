@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Domain.Models;
-using MyBookPlanner.Repository.Context.Configurations;
 
 namespace MyBookPlanner.Repository.Data
 {
