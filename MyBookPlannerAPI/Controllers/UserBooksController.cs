@@ -17,7 +17,7 @@ namespace MyBookPlanner.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("/user-book/{idUser:int}/{status:string}")]
+        [Route("/user-book/{idUser:int}/{status}")]
         public async Task<IActionResult> GetUserReadedBooks([FromRoute] int idUser, [FromRoute] string status)
         {
             var books = await _userBooksService.GetUserBooksByStatus(idUser, status);

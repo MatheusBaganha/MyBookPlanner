@@ -10,6 +10,11 @@ namespace MyBookPlanner.WebApi.Config
             services.AddControllers();
             services.AddTransient<TokenService>();
 
+
+            services.AddOpenApi();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
             return services;
         }
     }
