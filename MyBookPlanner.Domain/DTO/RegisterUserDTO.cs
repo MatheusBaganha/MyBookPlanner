@@ -8,6 +8,7 @@ namespace MyBookPlanner.Domain.DTO
         [Required]
         public string Username { get; set; }
         [Required]
+        [EmailAddress(ErrorMessage = "Email needs to be a valid email adress.")]
         public string Email { get; set; }
 
         [Required]

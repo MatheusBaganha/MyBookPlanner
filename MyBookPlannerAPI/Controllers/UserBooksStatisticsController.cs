@@ -6,7 +6,7 @@ namespace MyBookPlanner.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = "SameUser")]
     public class UserBooksStatisticsController : ControllerBase
     {
         private IUserBooksStatisticsService _userBooksStatisticsService;

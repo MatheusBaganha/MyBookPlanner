@@ -1,8 +1,10 @@
 ﻿using MyBookPlanner.Domain.Constantes;
 using MyBookPlanner.Domain.Models;
 using MyBookPlanner.Domain.ViewModels;
+using MyBookPlanner.Domain.ViewModels.Books;
 using MyBookPlanner.Repository.Interfaces;
 using MyBookPlanner.Service.Interfaces;
+using MyBookPlanner.Utils.Mappers;
 
 namespace MyBookPlanner.Service.Services
 {
@@ -13,7 +15,7 @@ namespace MyBookPlanner.Service.Services
         {
             _booksRepository = booksRepository;
         }
-        public async Task<Result<Book>> GetBookById(int idBook)
+        public async Task<Result<BookViewModel>> GetBookById(int idBook)
         {
             try
             {
@@ -21,18 +23,18 @@ namespace MyBookPlanner.Service.Services
 
                 if(book is null)
                 {
-                    return Result<Book>.Error(ErrorMessages.BookNotFound);
+                    return Result<BookViewModel>.Error(ErrorMessages.BookNotFound);
                 }
 
-                return Result<Book>.Sucess(book);
+                return Result<BookViewModel>.Sucess(book.Convert());
             }
             catch (Exception ex)
             {
-                return Result<Book>.Error(ErrorMessages.GenericError + ": " + ex.Message);
+                return Result<BookViewModel>.Error(ErrorMessages.GenericError + ": " + ex.Message);
             }
         }
 
-        public async Task<Result<List<Book>>> GetBooks(int page, int pageSize)
+        public async Task<Result<List<BookViewModel>>> GetBooks(int page, int pageSize)
         {
             try
             {
@@ -41,14 +43,14 @@ namespace MyBookPlanner.Service.Services
 
                 if(books is null || books.Count <= 0)
                 {
-                    return Result<List<Book>>.Error(ErrorMessages.NoMoreBooks);
+                    return Result<List<BookViewModel>>.Error(ErrorMessages.NoMoreBooks);
                 }
 
-                return Result<List<Book>>.Sucess(books);
+                return Result<List<BookViewModel>>.Sucess(books.ConvertList());
             }
             catch (Exception ex)
             {
-                return Result<List<Book>>.Error(ErrorMessages.GenericError + ": " + ex.Message);
+                return Result<List<BookViewModel>>.Error(ErrorMessages.GenericError + ": " + ex.Message);
             }
         }
     }

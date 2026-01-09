@@ -55,7 +55,7 @@ namespace MyBookPlanner.Service.Services
 
                 var emailAlreadyInUse = await _userRepository.DoesUserExists(model.Email);
 
-                if (emailAlreadyInUse != null)
+                if (emailAlreadyInUse != null && idUser != emailAlreadyInUse.Id)
                 {
                     return Result<UserViewModel>.Conflict(ErrorMessages.UserEmailAlreadyExists);
                 }
@@ -65,12 +65,6 @@ namespace MyBookPlanner.Service.Services
                 user.Biography = model.Biography;
 
                 await _genericRepository.UpdateAsync<User>(user);
-                var userUpdated = await _genericRepository.SaveChangesAsync();
-
-                if(!userUpdated)
-                {
-                    return Result<UserViewModel>.Error(ErrorMessages.ErrorOnUpdating);
-                }
 
                 return Result<UserViewModel>.Sucess(user.Convert());
             }
@@ -92,12 +86,6 @@ namespace MyBookPlanner.Service.Services
                 }
 
                 await _genericRepository.DeleteAsync<User>(user);
-                var userDeleted = await _genericRepository.SaveChangesAsync();
-
-                if (!userDeleted)
-                {
-                    return Result<UserViewModel>.Error(ErrorMessages.ErrorOnCreating);
-                }
 
                 return Result<UserViewModel>.Sucess(user.Convert());
             }

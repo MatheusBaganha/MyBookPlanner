@@ -6,7 +6,7 @@ using MyBookPlanner.Service.Interfaces;
 namespace MyBookPlanner.WebApi.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "SameUser")]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
@@ -17,26 +17,26 @@ namespace MyBookPlanner.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("/user/{id:int}")]
-        public async Task<IActionResult> GetUserById([FromRoute] int id)
+        [Route("/user/{idUser:int}")]
+        public async Task<IActionResult> GetUserById([FromRoute] int idUser)
         {
-            var user = await _userService.GetUserById(id);
+            var user = await _userService.GetUserById(idUser);
             return user.ToActionResult();
         }
 
         [HttpPut]
-        [Route("/user/{id:int}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody]  UpdateUserDTO model)
+        [Route("/user/{idUser:int}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int idUser, [FromBody]  UpdateUserDTO model)
         {
-            var user = await _userService.UpdateUser(id, model);
+            var user = await _userService.UpdateUser(idUser, model);
             return user.ToActionResult();
         }
 
         [HttpDelete]
-        [Route("/user/{id:int}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        [Route("/user/{idUser:int}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] int idUser)
         {
-            var user = await _userService.DeleteUser(id);
+            var user = await _userService.DeleteUser(idUser);
             return user.ToActionResult();
         }
     }

@@ -21,7 +21,7 @@ namespace MyBookPlanner.Repository.Repositorys
 
         public async Task<UserBook> DoesUserBookExists(int idUser, int idBook)
         {
-            var book = await _context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == idUser && x.IdBook == idBook);
+            var book = await _context.UserBooks.Include(ub => ub.Book).FirstOrDefaultAsync(x => x.IdUser == idUser && x.IdBook == idBook);
             return book;
         }
 

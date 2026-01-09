@@ -8,13 +8,16 @@ namespace MyBookPlanner.WebApi.Config
             this IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<TokenService>();
+            services.AddHttpContextAccessor();
 
-
-            services.AddOpenApi();
+            // 1. Register OpenAPI with the Transformer
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+            });
+            //services.AddOpenApi();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-
+            
             return services;
         }
     }

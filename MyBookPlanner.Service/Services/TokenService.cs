@@ -7,10 +7,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyBookPlanner.Domain.Config;
 using MyBookPlanner.Domain.Models;
+using MyBookPlanner.Service.Interfaces;
 
 namespace MyBookPlanner.Service.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
         private readonly JwtSettings _jwtSettings;
 

@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddDatabase(builder.Configuration)
     .AddApplicationServices()
+    .AddDIConfiguration(builder.Configuration)
     .AddCorsConfiguration()
     .AddJwtAuthentication(builder.Configuration);
 
@@ -25,8 +26,6 @@ app.UseHttpsRedirection();
 // Name of the policy configured
 app.UseCors("MyBookPlannerPolicy");
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -40,6 +39,9 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "My API v1");
     });
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 // Endpoints (always at last)

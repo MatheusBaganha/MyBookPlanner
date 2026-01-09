@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Domain.Constantes;
+using MyBookPlanner.Domain.DTO;
 using MyBookPlanner.Domain.Models;
 using MyBookPlanner.Domain.ViewModels;
 using MyBookPlanner.Repository.Data;
@@ -57,10 +58,15 @@ namespace MyBookPlanner.Service.Services
             }
         }
 
-        public async Task<Result<UserBooksViewModel>> AddUserBook(UserBook model)
+        public async Task<Result<UserBooksViewModel>> AddUserBook(UserBookDTO model)
         {
             try
             {
+                if(model.ReadingStatus != ReadingStatus.WishToRead && model.ReadingStatus != ReadingStatus.Reading && model.ReadingStatus != ReadingStatus.Read)
+                {
+                    return Result<UserBooksViewModel>.Error(ErrorMessages.UserBookStatusInvalid);
+                }
+
                 var userAlreadyHasBook = await _userBooksRepository.DoesUserBookExists(model.IdUser, model.IdBook);
 
                 if (userAlreadyHasBook is not null)
@@ -85,11 +91,7 @@ namespace MyBookPlanner.Service.Services
                     return Result<UserBooksViewModel>.Error(ErrorMessages.ErrorOnCreating);
                 }
 
-                var averageScoreUpdated = await UpdateAverageBookScore(userBook);
-                if(!averageScoreUpdated)
-                {
-                    // Save log data to fix it later if it happens. But it will not be made in this project, maybe in the future, or not (just lazyness).
-                }
+                await UpdateAverageBookScore(userBook);
 
                 var userBookViewModel = new UserBooksViewModel()
                 {
@@ -114,10 +116,15 @@ namespace MyBookPlanner.Service.Services
             }
         }
 
-        public async Task<Result<UserBooksViewModel>> UpdateUserBook(UserBook model)
+        public async Task<Result<UserBooksViewModel>> UpdateUserBook(UserBookDTO model)
         {
             try
             {
+                if (model.ReadingStatus != ReadingStatus.WishToRead && model.ReadingStatus != ReadingStatus.Reading && model.ReadingStatus != ReadingStatus.Read)
+                {
+                    return Result<UserBooksViewModel>.Error(ErrorMessages.UserBookStatusInvalid);
+                }
+
                 var userHasBook = await _userBooksRepository.DoesUserBookExists(model.IdUser, model.IdBook);
 
 
@@ -141,12 +148,7 @@ namespace MyBookPlanner.Service.Services
                     return Result<UserBooksViewModel>.Error(ErrorMessages.ErrorOnUpdating);
                 }
 
-                var averageScoreUpdated = await UpdateAverageBookScore(userHasBook);
-                if (!averageScoreUpdated)
-                {
-                    // Save log data to fix it later if it happens. But it will not be made in this project, maybe in the future, or not (just lazyness).
-                }
-
+                await UpdateAverageBookScore(userHasBook);
 
                 var userBookViewModel = new UserBooksViewModel()
                 {

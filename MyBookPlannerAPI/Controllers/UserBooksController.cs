@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyBookPlanner.Domain.DTO;
 using MyBookPlanner.Domain.Models;
 using MyBookPlanner.Service.Interfaces;
 
 namespace MyBookPlanner.WebApi.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "SameUser")]
     [Route("api/[controller]")]
     public class UserBooksController : ControllerBase
     {
@@ -18,7 +19,7 @@ namespace MyBookPlanner.WebApi.Controllers
 
         [HttpGet]
         [Route("/user-book/{idUser:int}/{status}")]
-        public async Task<IActionResult> GetUserReadedBooks([FromRoute] int idUser, [FromRoute] string status)
+        public async Task<IActionResult> GetUserReadedBooks([FromRoute] int idUser, [FromRoute] string status = "")
         {
             var books = await _userBooksService.GetUserBooksByStatus(idUser, status);
             return books.ToActionResult();
@@ -27,7 +28,7 @@ namespace MyBookPlanner.WebApi.Controllers
 
         [HttpPost]
         [Route("/user-book/add-book")]
-        public async Task<IActionResult> AddBook([FromBody] UserBook model)
+        public async Task<IActionResult> AddBook([FromBody] UserBookDTO model)
         {
             var bookAdded = await _userBooksService.AddUserBook(model);
             return bookAdded.ToActionResult();
@@ -35,7 +36,7 @@ namespace MyBookPlanner.WebApi.Controllers
 
         [HttpPut]
         [Route("/user-book/update-book")]
-        public async Task<IActionResult> UpdateBook([FromBody] UserBook model)
+        public async Task<IActionResult> UpdateBook([FromBody] UserBookDTO model)
         {
             var bookUpdated = await _userBooksService.UpdateUserBook(model);
             return bookUpdated.ToActionResult();

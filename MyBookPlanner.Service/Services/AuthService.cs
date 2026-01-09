@@ -13,8 +13,8 @@ namespace MyBookPlanner.Service.Services
     {
         private IGenericRepository _genericRepository;
         private IUserRepository _userRepository;
-        private TokenService _tokenService;
-        public AuthService(IGenericRepository genericRepository, IUserRepository userRepository, TokenService tokenService)
+        private ITokenService _tokenService;
+        public AuthService(IGenericRepository genericRepository, IUserRepository userRepository, ITokenService tokenService)
         {
             _genericRepository = genericRepository;
             _userRepository = userRepository;
@@ -40,6 +40,7 @@ namespace MyBookPlanner.Service.Services
 
                 var userViewModel = new UserViewModel()
                 {
+                    Id = userFound.Id,
                     Email = userFound.Email,
                     Biography = userFound.Biography,
                     UserToken = token,
@@ -76,17 +77,12 @@ namespace MyBookPlanner.Service.Services
 
 
                 await _userRepository.CreateUser(userToCreate);
-                var userCreated = await _genericRepository.SaveChangesAsync();
-
-                if(!userCreated)
-                {
-                    return Result<UserViewModel>.Error(ErrorMessages.ErrorOnCreating);
-                }
 
                 var token = _tokenService.GenerateToken(userToCreate);
 
                 var userViewModel = new UserViewModel()
                 {
+                    Id = userToCreate.Id,
                     Email = userToCreate.Email,
                     Biography = userToCreate.Biography,
                     UserToken = token

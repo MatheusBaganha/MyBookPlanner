@@ -38,7 +38,7 @@ namespace MyBookPlanner.Service.Services
                         ImageUrl = "",
                         ReleaseYear = DateTime.UtcNow.Year,
                         UserScore = 10,
-                        IdUser = 0,
+                        IdUser = idUser,
                         IdBook = 0
                     };
 

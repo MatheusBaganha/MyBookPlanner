@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyBookPlanner.Domain.Config;
 using MyBookPlanner.Repository.Data;
 using MyBookPlanner.Service.Services;
+using MyBookPlanner.WebApi.Config.Requirements;
 
 namespace MyBookPlanner.WebApi.Config
 {
@@ -13,6 +15,9 @@ namespace MyBookPlanner.WebApi.Config
                  this IServiceCollection services,
                  IConfiguration configuration)
         {
+
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
             var key = Encoding.ASCII.GetBytes(
                 configuration["JwtSettings:Key"]
                 ?? throw new Exception("JwtSettings:Key not configured")
@@ -36,7 +41,13 @@ namespace MyBookPlanner.WebApi.Config
                     };
                 });
 
-            services.AddAuthorization();
+
+            services.AddAuthorization(options =>
+            {
+                // check if the user is doing the operation in his own account.
+                options.AddPolicy("SameUser", policy =>
+                        policy.Requirements.Add(new SameUserRequirement()));
+            });
 
             return services;
         }

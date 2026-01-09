@@ -23,7 +23,8 @@ namespace MyBookPlanner.Domain.Constantes
         public const string UserNotFound = "User not found.";
         public const string UserEmailAlreadyExists = "Someone using that email adress already exists.";
         public const string UserBookAlreadyExists = "User already has that book.";
-        
+        public const string UserBookStatusInvalid = "Send a valid reading status: 'LIDO', 'LENDO', 'DESEJO'.";
+
 
 
 
