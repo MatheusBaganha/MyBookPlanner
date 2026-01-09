@@ -6,8 +6,8 @@ namespace MyBookPlanner.Domain.Constantes
 {
     public class ReadingStatus
     {
-        public const string Reading = "LENDO";
-        public const string Read = "LIDO";
-        public const string WishToRead = "DESEJO";
+        public const string Reading = "READING";
+        public const string Read = "READ";
+        public const string WishToRead = "WISH";
     }
 }
