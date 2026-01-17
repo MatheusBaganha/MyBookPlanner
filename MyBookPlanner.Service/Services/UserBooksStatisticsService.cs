@@ -14,11 +14,9 @@ namespace MyBookPlanner.Service.Services
 {
     public class UserBooksStatisticsService : IUserBooksStatisticsService
     {
-        private IGenericRepository _genericRepository;
         private IUserBooksRepository _userBooksRepository;
-        public UserBooksStatisticsService(IGenericRepository genericRepository, IUserBooksRepository userBooksRepository)
+        public UserBooksStatisticsService(IUserBooksRepository userBooksRepository)
         {
-            _genericRepository = genericRepository;
             _userBooksRepository = userBooksRepository;
         }
 

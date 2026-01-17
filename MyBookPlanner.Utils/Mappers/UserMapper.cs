@@ -12,6 +12,7 @@ namespace MyBookPlanner.Utils.Mappers
                 Id = user.Id,
                 Email = user.Email,
                 Biography = user.Biography,
+                Username = user.Username
             };
         } 
     }

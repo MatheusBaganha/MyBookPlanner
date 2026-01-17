@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyBookPlanner.Domain.Constantes;
 using MyBookPlanner.Domain.DTO;
 using MyBookPlanner.Domain.Models;
@@ -15,12 +12,10 @@ namespace MyBookPlanner.Service.Services
 {
     public class UserBooksService : IUserBooksService
     {
-        private MyBookPlannerDataContext _context;
         private IGenericRepository _genericRepository;
         private IUserBooksRepository _userBooksRepository;
-        public UserBooksService(MyBookPlannerDataContext context, IGenericRepository genericRepository, IUserBooksRepository userBooksRepository)
+        public UserBooksService(IGenericRepository genericRepository, IUserBooksRepository userBooksRepository)
         {
-            _context = context;
             _userBooksRepository = userBooksRepository;
             _genericRepository = genericRepository;
         }
@@ -82,14 +77,7 @@ namespace MyBookPlanner.Service.Services
                     UserScore = float.Parse(model.UserScore.ToString("0.0"))
                 };
 
-
-                await  _context.UserBooks.AddAsync(userBook);
-                var userBookAdded = await _context.SaveChangesAsync() > 0;
-
-                if(!userBookAdded)
-                {
-                    return Result<UserBooksViewModel>.Error(ErrorMessages.ErrorOnCreating);
-                }
+                await _genericRepository.InsertAsync<UserBook>(userBook);
 
                 await UpdateAverageBookScore(userBook);
 
@@ -138,15 +126,7 @@ namespace MyBookPlanner.Service.Services
                 userHasBook.ReadingStatus = model.ReadingStatus;
                 userHasBook.UserScore = float.Parse(model.UserScore.ToString("0.0"));
 
-
-                _context.UserBooks.Update(userHasBook);
-
-                var userBookUpdated = await _context.SaveChangesAsync() > 0;
-
-                if (!userBookUpdated)
-                {
-                    return Result<UserBooksViewModel>.Error(ErrorMessages.ErrorOnUpdating);
-                }
+                await _genericRepository.UpdateAsync(userHasBook);
 
                 await UpdateAverageBookScore(userHasBook);
 
@@ -178,7 +158,7 @@ namespace MyBookPlanner.Service.Services
         {
             try
             {
-                var userBook = await _context.UserBooks.FirstOrDefaultAsync(x => x.IdUser == idUser && x.IdBook == idBook);
+                var userBook = await _genericRepository.GetFirstOrDefaultAsync<UserBook>(x => x.IdUser == idUser && x.IdBook == idBook);
 
                 if (userBook is null)
                 {
@@ -199,8 +179,7 @@ namespace MyBookPlanner.Service.Services
                     UserScore = userBook.UserScore,
                 };
 
-
-                await _context.SaveChangesAsync();
+                await _genericRepository.DeleteAsync(userBook);
 
                 return Result<UserBooksViewModel>.Sucess(userBookViewModel);
             }
@@ -220,15 +199,15 @@ namespace MyBookPlanner.Service.Services
 
             if (model.ReadingStatus.ToUpper() == ReadingStatus.Read)
             {
-                book = await _context.Books.FirstOrDefaultAsync(x => x.Id == model.IdBook);
+                book = await _genericRepository.GetFirstOrDefaultAsync<Book>(x => x.Id == model.IdBook);
 
                 if (book != null)
                 {
                     book.Score = (book.Score + model.UserScore) / 2;
-                    _context.Books.Update(book);
+                    await _genericRepository.UpdateAsync<Book>(book);
                 }
 
-                return await _context.SaveChangesAsync() > 0;
+                return true;
             }
 
             return false;
